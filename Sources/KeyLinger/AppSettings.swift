@@ -3,16 +3,25 @@ import Foundation
 enum AppLanguage: String, CaseIterable, Sendable {
     case system
     case simplifiedChinese = "zh-Hans"
+    case traditionalChinese = "zh-Hant"
     case english = "en"
 
     var resourceName: String {
         switch self {
         case .simplifiedChinese:
             return "zh-Hans"
+        case .traditionalChinese:
+            return "zh-Hant"
         case .english:
             return "en"
         case .system:
             let preferred = Locale.preferredLanguages.first?.lowercased() ?? "en"
+            if preferred.hasPrefix("zh-hant") ||
+                preferred.hasPrefix("zh-tw") ||
+                preferred.hasPrefix("zh-hk") ||
+                preferred.hasPrefix("zh-mo") {
+                return "zh-Hant"
+            }
             return preferred.hasPrefix("zh") ? "zh-Hans" : "en"
         }
     }

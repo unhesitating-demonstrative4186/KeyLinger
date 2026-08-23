@@ -47,6 +47,7 @@ struct SettingsView: View {
                 Picker("", selection: $settings.language) {
                     Text(text("language.system")).tag(AppLanguage.system)
                     Text("简体中文").tag(AppLanguage.simplifiedChinese)
+                    Text("繁體中文").tag(AppLanguage.traditionalChinese)
                     Text("English").tag(AppLanguage.english)
                 }
                 .labelsHidden()
@@ -127,6 +128,16 @@ struct SettingsView: View {
             }
             .font(.caption)
             .padding(.leading, 24)
+
+            Label {
+                Text(text("settings.privacy"))
+                    .fixedSize(horizontal: false, vertical: true)
+            } icon: {
+                Image(systemName: "hand.raised.fill")
+            }
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .padding(.leading, 24)
         }
     }
 
@@ -179,7 +190,7 @@ struct SettingsView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.5.1"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.6.0"
     }
 
     private func text(_ key: String) -> String {

@@ -44,3 +44,4 @@
 "settings.updateAvailable" = "发现新版本 %@";
 "settings.noReleases" = "仓库暂无 Release";
 "settings.updateFailed" = "检查失败，请稍后重试";
+"settings.privacy" = "隐私说明：KeyLinger 只读取当前按键状态，不记录按键历史或输入内容，也不会上传键盘数据。仅在手动检查更新时访问 GitHub。";

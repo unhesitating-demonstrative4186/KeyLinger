@@ -44,3 +44,4 @@
 "settings.updateAvailable" = "New version %@";
 "settings.noReleases" = "No GitHub Release yet";
 "settings.updateFailed" = "Update check failed; try again later";
+"settings.privacy" = "Privacy: KeyLinger reads only the current key state. It does not record key history or typed content, and never uploads keyboard data. GitHub is contacted only when you check for updates.";

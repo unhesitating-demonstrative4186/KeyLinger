@@ -10,6 +10,14 @@
 macOS 的 combined session 键位状态。因此 RustDesk 等远程控制软件漏掉 `keyup`
 时，即使随后才启动本工具，也能看到卡住的键。
 
+## 界面
+
+![KeyLinger 完整状态面板](docs/images/keylinger-main.png)
+
+![KeyLinger 小窗模式](docs/images/keylinger-compact.png)
+
+<img src="docs/images/keylinger-settings.png" alt="KeyLinger 设置窗口" width="460">
+
 ## 下载
 
 从 [GitHub Releases](https://github.com/myweihp/KeyLinger/releases/latest) 下载对应机型的 DMG：
@@ -40,10 +48,10 @@ swift run KeyLinger
 
 ```bash
 ./build_app.sh release arm64
-./scripts/create_dmg.sh v0.5.1 arm64
+./scripts/create_dmg.sh arm64
 
 ./build_app.sh release x86_64
-./scripts/create_dmg.sh v0.5.1 x86_64
+./scripts/create_dmg.sh x86_64
 ```
 
 如需本地生成同时包含两种架构的 App，仍可运行 `./build_app.sh release universal`。
@@ -51,7 +59,7 @@ swift run KeyLinger
 程序默认显示一个置顶小面板，同时常驻菜单栏。关闭面板不会退出；可从菜单栏再次显示或退出。
 
 菜单栏保留“显示面板 / 小窗模式 / 设置 / 退出”等常用入口。设置窗口可以选择
-“跟随系统 / 简体中文 / English”、2–30 Hz 刷新频率和窗口模式；这些选择会自动保存。
+“跟随系统 / 简体中文 / 繁體中文 / English”、2–30 Hz 刷新频率和窗口模式；这些选择会自动保存。
 “关于”区域提供项目地址，并通过 GitHub Releases 检查新版本。
 
 ## 系统要求
@@ -64,6 +72,11 @@ swift run KeyLinger
 
 - 显示的是 macOS 当前会话的逻辑键位状态，正好适合排查远程输入的“粘键”。
 - 部分厂商自定义功能键、Touch Bar 动作或消费类媒体键不使用标准键盘虚拟键码，可能无法显示。
+
+## 隐私
+
+KeyLinger 只读取系统当前报告的按键状态，不记录按键历史或输入内容，也不会上传任何键盘数据。
+程序仅在用户手动点击“检查更新”时访问 GitHub Releases API。
 
 ## 许可证
 

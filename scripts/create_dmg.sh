@@ -3,9 +3,15 @@
 set -euo pipefail
 
 project_dir="${0:A:h:h}"
-version="${1:-$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$project_dir/Resources/Info.plist")}"
+bundle_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$project_dir/Resources/Info.plist")"
+if [[ "${1:-}" == "arm64" || "${1:-}" == "x86_64" || "${1:-}" == "universal" ]]; then
+    version="$bundle_version"
+    requested_architecture="$1"
+else
+    version="${1:-$bundle_version}"
+    requested_architecture="${2:-auto}"
+fi
 version="${version#v}"
-requested_architecture="${2:-auto}"
 app_path="$project_dir/dist/KeyLinger.app"
 
 if [[ ! -d "$app_path" ]]; then
@@ -51,6 +57,7 @@ case "$requested_architecture" in
         ;;
     *)
         print -u2 "用法: ./scripts/create_dmg.sh [版本] [arm64|x86_64|universal]"
+        print -u2 "   或: ./scripts/create_dmg.sh [arm64|x86_64|universal]"
         exit 2
         ;;
 esac
