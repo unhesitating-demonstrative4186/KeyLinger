@@ -17,7 +17,7 @@ macOS 的 combined session 键位状态。因此 RustDesk 等远程控制软件�
     <td width="58%" valign="top">
       <p align="center">
         <strong>完整状态面板</strong><br>
-        <sub>按键状态、实时计数与刷新频率一目了然</sub>
+        <sub>键盘 Map 直观标出仍处于按下状态的键</sub>
       </p>
       <a href="docs/images/keylinger-main.png">
         <img src="docs/images/keylinger-main.png" alt="KeyLinger 完整状态面板" width="100%">
@@ -83,7 +83,8 @@ swift run KeyLinger
 
 程序默认显示一个置顶小面板，同时常驻菜单栏。关闭面板不会退出；可从菜单栏再次显示或退出。
 
-菜单栏保留“显示面板 / 小窗模式 / 设置 / 退出”等常用入口。设置窗口可以选择
+完整面板右上角可以在“按键列表 / 键盘 Map”之间切换，选择会自动保存。菜单栏保留
+“显示面板 / 小窗模式 / 设置 / 退出”等常用入口。设置窗口可以选择
 “跟随系统 / 简体中文 / 繁體中文 / English”、2–30 Hz 刷新频率、窗口模式和强调色主题；
 这些选择会自动保存。界面外观始终跟随 macOS 的浅色或深色模式。
 “关于”区域提供项目地址，并通过 GitHub Releases 检查新版本。
@@ -97,6 +98,8 @@ swift run KeyLinger
 ## 已知边界
 
 - 显示的是 macOS 当前会话的逻辑键位状态，正好适合排查远程输入的“粘键”。
+- 键盘 Map 当前采用常见的 MacBook/ANSI 排列；数字小键盘、ISO/JIS 等布局外按键被按下时，
+  会在 Map 下方以标签显示，不会遗漏检测结果。
 - 部分厂商自定义功能键、Touch Bar 动作或消费类媒体键不使用标准键盘虚拟键码，可能无法显示。
 
 ## 隐私

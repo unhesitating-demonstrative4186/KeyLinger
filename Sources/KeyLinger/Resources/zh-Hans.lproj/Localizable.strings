@@ -17,6 +17,12 @@
 "compact.normal" = "键盘状态正常";
 "window.compact" = "切换到小窗模式";
 "window.expand" = "展开完整面板";
+"view.mode" = "显示方式";
+"view.list" = "按键列表";
+"view.keyboard" = "键盘视图";
+"keyboard.otherPressed" = "布局之外仍处于按下状态的键";
+"keyboard.keyPressed" = "已按下";
+"keyboard.keyReleased" = "未按下";
 "permission.title" = "需要输入监控权限";
 "permission.message" = "授权后，窗口失焦时也能读取字母、数字和空格；授权后可能需要重启本程序。";
 "permission.compact" = "失焦检测尚未授权";

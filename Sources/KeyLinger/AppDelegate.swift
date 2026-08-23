@@ -121,6 +121,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             .sink { [weak self] _ in self?.updatePanelMode(animated: true) }
             .store(in: &cancellables)
 
+        settings.$standardViewMode
+            .dropFirst()
+            .sink { [weak self] _ in self?.updatePanelMode(animated: true) }
+            .store(in: &cancellables)
+
         settings.$pollingFrequency
             .dropFirst()
             .sink { [weak self] frequency in
@@ -181,13 +186,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         guard panel != nil else { return }
 
         let topLeft = NSPoint(x: panel.frame.minX, y: panel.frame.maxY)
-        let targetSize = settings.compactMode
-            ? NSSize(width: 330, height: 58)
-            : NSSize(width: 430, height: inputAccess.isGranted ? 250 : 300)
+        let targetSize: NSSize
+        let minimumSize: NSSize
+        if settings.compactMode {
+            targetSize = NSSize(width: 330, height: 58)
+            minimumSize = NSSize(width: 280, height: 58)
+        } else if settings.standardViewMode == .keyboard {
+            targetSize = NSSize(width: 760, height: inputAccess.isGranted ? 390 : 455)
+            minimumSize = NSSize(width: 640, height: inputAccess.isGranted ? 350 : 415)
+        } else {
+            targetSize = NSSize(width: 430, height: inputAccess.isGranted ? 250 : 300)
+            minimumSize = NSSize(width: 390, height: 230)
+        }
 
-        panel.contentMinSize = settings.compactMode
-            ? NSSize(width: 280, height: 58)
-            : NSSize(width: 390, height: 230)
+        panel.contentMinSize = minimumSize
         panel.contentMaxSize = settings.compactMode
             ? NSSize(width: 620, height: 58)
             : NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
@@ -196,6 +208,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let changes = {
             self.panel.setContentSize(targetSize)
             self.panel.setFrameTopLeftPoint(topLeft)
+            if let screen = self.panel.screen {
+                let constrainedFrame = self.panel.constrainFrameRect(self.panel.frame, to: screen)
+                self.panel.setFrame(constrainedFrame, display: true)
+            }
         }
 
         if animated {

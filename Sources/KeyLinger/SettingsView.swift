@@ -213,7 +213,7 @@ struct SettingsView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.7.0"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.8.0"
     }
 
     private var githubMark: Image {

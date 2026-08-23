@@ -26,19 +26,32 @@ struct PressedKeysView: View {
                 permissionBanner
             }
 
-            Group {
-                if monitor.pressedKeys.isEmpty {
-                    emptyState
-                } else {
-                    pressedKeyGrid
-                }
-            }
+            fullContent
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             footer
         }
         .padding(18)
-        .frame(minWidth: 390, idealWidth: 430, minHeight: 230, idealHeight: 280)
+        .frame(
+            minWidth: settings.standardViewMode == .keyboard ? 640 : 390,
+            idealWidth: settings.standardViewMode == .keyboard ? 760 : 430,
+            minHeight: settings.standardViewMode == .keyboard ? 350 : 230,
+            idealHeight: settings.standardViewMode == .keyboard ? 390 : 280
+        )
+    }
+
+    @ViewBuilder
+    private var fullContent: some View {
+        if settings.standardViewMode == .keyboard {
+            KeyboardMapView(
+                pressedKeys: monitor.pressedKeys,
+                language: settings.language
+            )
+        } else if monitor.pressedKeys.isEmpty {
+            emptyState
+        } else {
+            pressedKeyGrid
+        }
     }
 
     private var compactView: some View {
@@ -105,6 +118,19 @@ struct PressedKeysView: View {
             }
 
             Spacer()
+
+            Picker("", selection: $settings.standardViewMode) {
+                Image(systemName: "list.bullet")
+                    .tag(StandardViewMode.list)
+                    .help(text("view.list"))
+                Image(systemName: "keyboard")
+                    .tag(StandardViewMode.keyboard)
+                    .help(text("view.keyboard"))
+            }
+            .labelsHidden()
+            .pickerStyle(.segmented)
+            .frame(width: 76)
+            .accessibilityLabel(text("view.mode"))
 
             Button(action: openSettings) {
                 Image(systemName: "gearshape")

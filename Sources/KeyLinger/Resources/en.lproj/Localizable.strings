@@ -17,6 +17,12 @@
 "compact.normal" = "Keyboard status is normal";
 "window.compact" = "Switch to compact window";
 "window.expand" = "Expand full panel";
+"view.mode" = "Display style";
+"view.list" = "Key list";
+"view.keyboard" = "Keyboard map";
+"keyboard.otherPressed" = "Pressed keys outside this layout";
+"keyboard.keyPressed" = "Pressed";
+"keyboard.keyReleased" = "Not pressed";
 "permission.title" = "Input Monitoring is required";
 "permission.message" = "Allow access to read letters, numbers, and Space while another app is focused. A restart may be required.";
 "permission.compact" = "Background detection not authorized";

@@ -18,6 +18,9 @@ jobs:
       - name: Build debug target
         run: swift build
 
+      - name: Validate keyboard layout
+        run: swift run KeyLinger --validate-keyboard-layout
+
       - name: Build Apple Silicon app
         run: ./build_app.sh release arm64
 

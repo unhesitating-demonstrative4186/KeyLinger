@@ -37,11 +37,17 @@ enum PollingFrequency: Int, CaseIterable, Identifiable, Sendable {
     var id: Int { rawValue }
 }
 
+enum StandardViewMode: String, CaseIterable, Sendable {
+    case list
+    case keyboard
+}
+
 @MainActor
 final class AppSettings: ObservableObject {
     private enum Keys {
         static let language = "language"
         static let compactMode = "compactMode"
+        static let standardViewMode = "standardViewMode"
         static let pollingFrequency = "pollingFrequency"
         static let accentTheme = "accentTheme"
     }
@@ -52,6 +58,10 @@ final class AppSettings: ObservableObject {
 
     @Published var compactMode: Bool {
         didSet { defaults.set(compactMode, forKey: Keys.compactMode) }
+    }
+
+    @Published var standardViewMode: StandardViewMode {
+        didSet { defaults.set(standardViewMode.rawValue, forKey: Keys.standardViewMode) }
     }
 
     @Published var pollingFrequency: PollingFrequency {
@@ -78,6 +88,9 @@ final class AppSettings: ObservableObject {
             compactMode = legacyDefaults?.bool(forKey: Keys.compactMode) ?? false
         }
 
+        let storedStandardViewMode = defaults.string(forKey: Keys.standardViewMode)
+        standardViewMode = storedStandardViewMode.flatMap(StandardViewMode.init(rawValue:)) ?? .keyboard
+
         let storedFrequency = defaults.object(forKey: Keys.pollingFrequency) as? Int
             ?? legacyDefaults?.object(forKey: Keys.pollingFrequency) as? Int
         pollingFrequency = storedFrequency.flatMap(PollingFrequency.init(rawValue:)) ?? .balanced
@@ -88,6 +101,7 @@ final class AppSettings: ObservableObject {
         // Preserve preferences when upgrading from the former local.keyboard-status bundle ID.
         defaults.set(language.rawValue, forKey: Keys.language)
         defaults.set(compactMode, forKey: Keys.compactMode)
+        defaults.set(standardViewMode.rawValue, forKey: Keys.standardViewMode)
         defaults.set(pollingFrequency.rawValue, forKey: Keys.pollingFrequency)
         defaults.set(accentTheme.rawValue, forKey: Keys.accentTheme)
     }

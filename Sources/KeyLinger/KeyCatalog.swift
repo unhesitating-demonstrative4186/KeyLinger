@@ -9,7 +9,18 @@ struct KeyDescriptor: Identifiable, Equatable, Sendable {
     var id: CGKeyCode { code }
 
     func displayName(language: AppLanguage) -> String {
-        language.resourceName == "zh-Hans" ? chineseName : englishName
+        switch language.resourceName {
+        case "zh-Hans":
+            return chineseName
+        case "zh-Hant":
+            return chineseName
+                .replacingOccurrences(of: "向前删除", with: "向前刪除")
+                .replacingOccurrences(of: "静音", with: "靜音")
+                .replacingOccurrences(of: "小键盘", with: "小鍵盤")
+                .replacingOccurrences(of: "英数", with: "英數")
+        default:
+            return englishName
+        }
     }
 }
 
@@ -65,6 +76,14 @@ enum KeyCatalog {
         key(95, "JIS Numpad ,", "JIS 小键盘 ,"), key(102, "Eisu", "英数"),
         key(104, "Kana", "かな")
     ]
+
+    private static let descriptorsByCode = Dictionary(
+        uniqueKeysWithValues: all.map { ($0.code, $0) }
+    )
+
+    static func descriptor(for code: CGKeyCode) -> KeyDescriptor? {
+        descriptorsByCode[code]
+    }
 
     private static func key(
         _ code: CGKeyCode,

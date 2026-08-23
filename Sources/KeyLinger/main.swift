@@ -12,4 +12,10 @@ private func runApplication() {
     withExtendedLifetime(delegate) {}
 }
 
-runApplication()
+if CommandLine.arguments.contains("--validate-keyboard-layout") {
+    let errors = CompactANSIKeyboardLayout.validationErrors()
+    precondition(errors.isEmpty, errors.joined(separator: "\n"))
+    print("Keyboard layout validation passed")
+} else {
+    runApplication()
+}

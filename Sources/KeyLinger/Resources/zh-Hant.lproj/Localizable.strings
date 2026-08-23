@@ -17,6 +17,12 @@
 "compact.normal" = "鍵盤狀態正常";
 "window.compact" = "切換至小視窗模式";
 "window.expand" = "展開完整面板";
+"view.mode" = "顯示方式";
+"view.list" = "按鍵列表";
+"view.keyboard" = "鍵盤檢視";
+"keyboard.otherPressed" = "配置之外仍處於按下狀態的按鍵";
+"keyboard.keyPressed" = "已按下";
+"keyboard.keyReleased" = "未按下";
 "permission.title" = "需要輸入監控權限";
 "permission.message" = "授權後，即使視窗失去焦點，仍可讀取字母、數字和空白鍵；授權後可能需要重新啟動本程式。";
 "permission.compact" = "尚未授權背景偵測";
