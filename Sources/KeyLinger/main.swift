@@ -5,7 +5,10 @@ private func runApplication() {
     let application = NSApplication.shared
     let delegate = AppDelegate()
 
-    application.setActivationPolicy(.accessory)
+    let activationPolicy: NSApplication.ActivationPolicy = AppSettings.shouldShowDockIcon()
+        ? .regular
+        : .accessory
+    application.setActivationPolicy(activationPolicy)
     application.delegate = delegate
     application.run()
 

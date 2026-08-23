@@ -92,7 +92,8 @@ The original motivation was diagnosing lost `keyup` signals in RustDesk sessions
 - Responsive MacBook/ANSI keyboard map with a clear pressed-key state.
 - Key-list view for a compact textual diagnosis.
 - Fallback labels for numpad, ISO, JIS, and other keys outside the visual map.
-- Floating panel that can remain visible across Spaces, plus a menu-bar entry.
+- Normal macOS window layering with visibility across Spaces, plus a persistent menu-bar entry.
+- Optional Dock presence with native minimization and reliable click-to-reopen behavior.
 - Compact window mode for status-only monitoring.
 - Configurable 2–30 Hz polling rate and persistent display preferences.
 - English, Simplified Chinese, and Traditional Chinese interface languages.

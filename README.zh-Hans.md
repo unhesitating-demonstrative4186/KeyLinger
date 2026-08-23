@@ -92,7 +92,8 @@ CGEventSource.keyState(.combinedSessionState, key: keyCode)
 - 响应式 MacBook/ANSI 键盘 Map，清晰标出按下状态。
 - 按键列表视图，适合用文字快速确认结果。
 - 数字小键盘、ISO、JIS 等 Map 外按键通过标签兜底显示。
-- 可跨桌面显示的置顶面板，以及常驻菜单栏入口。
+- 遵循 macOS 正常窗口层级、可跨桌面显示的面板，以及常驻菜单栏入口。
+- 可选 Dock 入口；显示 Dock 图标时支持原生最小化和点击恢复主窗口。
 - 适合放在屏幕边缘的小窗模式。
 - 2–30 Hz 可调读取频率，显示偏好自动保存。
 - English、简体中文和繁體中文界面。

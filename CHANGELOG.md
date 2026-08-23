@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 — 2026-08-23
+
+- Added an optional Dock presence, enabled by default, with a menu-bar-only setting for users who prefer it.
+- Dock activation now restores the main panel, with localized Dock and application menus.
+- Added native window minimization, including the yellow title-bar control and Command-M, when Dock mode is enabled.
+- Returned the main and settings windows to normal macOS layering so they no longer remain above unrelated apps.
+- Reworked the app icon into a full-size single-squircle design without the previous nested outer bezel.
+
 ## 0.8.1 — 2026-08-23
 
 - Migrated to the stable `io.github.myweihp.KeyLinger` bundle identifier, preserving existing app preferences.

@@ -16,11 +16,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var settingsMenuItem: NSMenuItem!
     private var permissionMenuItem: NSMenuItem!
     private var quitMenuItem: NSMenuItem!
+    private var mainShowMenuItem: NSMenuItem!
+    private var mainSettingsMenuItem: NSMenuItem!
+    private var mainQuitMenuItem: NSMenuItem!
+    private var windowMenuItem: NSMenuItem!
+    private var minimizeMenuItem: NSMenuItem!
+    private var bringAllToFrontMenuItem: NSMenuItem!
     private var cancellables = Set<AnyCancellable>()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         makePanel()
         makeStatusItem()
+        makeApplicationMenu()
 
         monitor.permissionRefresh = { [weak self] in
             self?.inputAccess.refresh()
@@ -49,6 +56,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         monitor.stop()
     }
 
+    func applicationShouldHandleReopen(
+        _ sender: NSApplication,
+        hasVisibleWindows flag: Bool
+    ) -> Bool {
+        sender.activate(ignoringOtherApps: true)
+        if panel.isMiniaturized {
+            panel.deminiaturize(nil)
+        }
+        panel.makeKeyAndOrderFront(nil)
+        return true
+    }
+
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        let menu = NSMenu()
+        let showItem = menu.addItem(
+            withTitle: text("menu.showPanel"),
+            action: #selector(showPanel),
+            keyEquivalent: ""
+        )
+        showItem.target = self
+
+        let settingsItem = menu.addItem(
+            withTitle: text("menu.settings"),
+            action: #selector(showSettings),
+            keyEquivalent: ""
+        )
+        settingsItem.target = self
+        return menu
+    }
+
     private func makePanel() {
         let view = PressedKeysView(
             monitor: monitor,
@@ -58,14 +95,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         )
         let hostingView = NSHostingView(rootView: view)
 
+        var styleMask: NSWindow.StyleMask = [
+            .titled,
+            .closable,
+            .resizable,
+            .utilityWindow
+        ]
+        if settings.showDockIcon {
+            styleMask.insert(.miniaturizable)
+        }
+
         panel = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 430, height: 280),
-            styleMask: [.titled, .closable, .resizable, .utilityWindow],
+            styleMask: styleMask,
             backing: .buffered,
             defer: false
         )
         panel.contentView = hostingView
-        panel.level = .floating
+        panel.level = .normal
         panel.isReleasedWhenClosed = false
         panel.hidesOnDeactivate = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
@@ -105,6 +152,63 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         statusItem.menu = menu
     }
 
+    private func makeApplicationMenu() {
+        let mainMenu = NSMenu()
+        let appMenuItem = NSMenuItem()
+        let appMenu = NSMenu(title: "KeyLinger")
+        appMenuItem.submenu = appMenu
+
+        mainShowMenuItem = appMenu.addItem(
+            withTitle: "",
+            action: #selector(showPanel),
+            keyEquivalent: ""
+        )
+        mainShowMenuItem.target = self
+
+        mainSettingsMenuItem = appMenu.addItem(
+            withTitle: "",
+            action: #selector(showSettings),
+            keyEquivalent: ","
+        )
+        mainSettingsMenuItem.target = self
+
+        appMenu.addItem(.separator())
+        mainQuitMenuItem = appMenu.addItem(
+            withTitle: "",
+            action: #selector(quit),
+            keyEquivalent: "q"
+        )
+        mainQuitMenuItem.target = self
+
+        mainMenu.addItem(appMenuItem)
+
+        windowMenuItem = NSMenuItem()
+        let windowMenu = NSMenu()
+        windowMenu.autoenablesItems = false
+        windowMenuItem.submenu = windowMenu
+
+        minimizeMenuItem = windowMenu.addItem(
+            withTitle: "",
+            action: #selector(minimizeActiveWindow),
+            keyEquivalent: "m"
+        )
+        minimizeMenuItem.keyEquivalentModifierMask = [.command]
+        minimizeMenuItem.target = self
+        minimizeMenuItem.isEnabled = settings.showDockIcon
+
+        windowMenu.addItem(.separator())
+        bringAllToFrontMenuItem = windowMenu.addItem(
+            withTitle: "",
+            action: #selector(bringAllToFront),
+            keyEquivalent: ""
+        )
+        bringAllToFrontMenuItem.target = self
+
+        mainMenu.addItem(windowMenuItem)
+        NSApplication.shared.windowsMenu = windowMenu
+        NSApplication.shared.mainMenu = mainMenu
+    }
+
     private func observeState() {
         monitor.$pressedKeys
             .sink { [weak self] pressedKeys in
@@ -135,6 +239,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             }
             .store(in: &cancellables)
 
+        settings.$showDockIcon
+            .dropFirst()
+            .sink { [weak self] showDockIcon in
+                self?.updateDockVisibility(showDockIcon)
+            }
+            .store(in: &cancellables)
+
         inputAccess.$isGranted
             .sink { [weak self] _ in self?.updatePermissionMenuItem() }
             .store(in: &cancellables)
@@ -147,10 +258,46 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         compactMenuItem?.title = text("menu.compactMode", language: language)
         settingsMenuItem?.title = text("menu.settings", language: language)
         quitMenuItem?.title = text("menu.quit", language: language)
+        mainShowMenuItem?.title = text("menu.showPanel", language: language)
+        mainSettingsMenuItem?.title = text("menu.settings", language: language)
+        mainQuitMenuItem?.title = text("menu.quit", language: language)
+        windowMenuItem?.title = text("menu.window", language: language)
+        windowMenuItem?.submenu?.title = text("menu.window", language: language)
+        minimizeMenuItem?.title = text("menu.minimize", language: language)
+        bringAllToFrontMenuItem?.title = text("menu.bringAllToFront", language: language)
         settingsWindow?.title = text("settings.title", language: language)
 
         updatePermissionMenuItem(language: language)
         updateStatusItem(language: language)
+    }
+
+    private func updateDockVisibility(_ showDockIcon: Bool) {
+        let policy: NSApplication.ActivationPolicy = showDockIcon ? .regular : .accessory
+        if NSApplication.shared.activationPolicy() != policy {
+            NSApplication.shared.setActivationPolicy(policy)
+        }
+
+        updateMiniaturizationAvailability(showDockIcon)
+
+        if showDockIcon {
+            NSApplication.shared.activate(ignoringOtherApps: true)
+        }
+    }
+
+    private func updateMiniaturizationAvailability(_ isEnabled: Bool) {
+        minimizeMenuItem?.isEnabled = isEnabled
+
+        for window in [panel, settingsWindow].compactMap({ $0 }) {
+            if !isEnabled && window.isMiniaturized {
+                window.deminiaturize(nil)
+            }
+
+            if isEnabled {
+                window.styleMask.insert(.miniaturizable)
+            } else {
+                window.styleMask.remove(.miniaturizable)
+            }
+        }
     }
 
     private func updateStatusItem(
@@ -260,12 +407,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @objc private func showPanel() {
-        panel.orderFrontRegardless()
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        panel.makeKeyAndOrderFront(nil)
     }
 
     @objc private func toggleCompactMode() {
         settings.compactMode.toggle()
-        panel.orderFrontRegardless()
+        showPanel()
+    }
+
+    @objc private func minimizeActiveWindow() {
+        guard settings.showDockIcon else { return }
+        let window = NSApplication.shared.keyWindow ?? NSApplication.shared.mainWindow ?? panel
+        window?.performMiniaturize(nil)
+    }
+
+    @objc private func bringAllToFront() {
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        NSApplication.shared.arrangeInFront(nil)
     }
 
     @objc private func requestInputMonitoring() {
@@ -275,9 +434,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @objc private func showSettings() {
         if settingsWindow == nil {
             let view = SettingsView(settings: settings)
+            var styleMask: NSWindow.StyleMask = [.titled, .closable]
+            if settings.showDockIcon {
+                styleMask.insert(.miniaturizable)
+            }
+
             let window = NSPanel(
-                contentRect: NSRect(x: 0, y: 0, width: 460, height: 600),
-                styleMask: [.titled, .closable],
+                contentRect: NSRect(x: 0, y: 0, width: 460, height: 660),
+                styleMask: styleMask,
                 backing: .buffered,
                 defer: false
             )
@@ -285,7 +449,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             window.contentView = NSHostingView(rootView: view)
             window.isReleasedWhenClosed = false
             window.hidesOnDeactivate = false
-            window.level = .floating
+            window.level = .normal
             window.center()
             settingsWindow = window
         }

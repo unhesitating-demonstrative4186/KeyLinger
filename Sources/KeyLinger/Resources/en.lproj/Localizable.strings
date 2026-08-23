@@ -4,6 +4,9 @@
 "menu.settings" = "Settings…";
 "menu.language" = "Language";
 "menu.quit" = "Quit KeyLinger";
+"menu.window" = "Window";
+"menu.minimize" = "Minimize";
+"menu.bringAllToFront" = "Bring All to Front";
 "language.system" = "System Default";
 "status.normalTitle" = "Keyboard status is normal";
 "status.pressedTitle" = "Keys are still held down";
@@ -45,6 +48,8 @@
 "settings.window" = "Window";
 "settings.compactMode" = "Use compact window";
 "settings.compactHint" = "Show only the status light, current keys, and shortcuts.";
+"settings.showDockIcon" = "Show KeyLinger in the Dock";
+"settings.showDockHint" = "Keep a reliable window entry even if the menu bar item is hidden.";
 "settings.about" = "About";
 "settings.version" = "Version %@";
 "settings.author" = "Author: %@";

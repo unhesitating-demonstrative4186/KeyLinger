@@ -50,6 +50,7 @@ final class AppSettings: ObservableObject {
         static let standardViewMode = "standardViewMode"
         static let pollingFrequency = "pollingFrequency"
         static let accentTheme = "accentTheme"
+        static let showDockIcon = "showDockIcon"
         static let panelFrame = "NSWindow Frame KeyLingerPanel"
     }
 
@@ -71,6 +72,10 @@ final class AppSettings: ObservableObject {
 
     @Published var accentTheme: AccentTheme {
         didSet { defaults.set(accentTheme.rawValue, forKey: Keys.accentTheme) }
+    }
+
+    @Published var showDockIcon: Bool {
+        didSet { defaults.set(showDockIcon, forKey: Keys.showDockIcon) }
     }
 
     private let defaults: UserDefaults
@@ -112,17 +117,26 @@ final class AppSettings: ObservableObject {
             ?? previousString(forKey: Keys.accentTheme)
         accentTheme = storedAccentTheme.flatMap(AccentTheme.init(rawValue:)) ?? .system
 
+        showDockIcon = defaults.object(forKey: Keys.showDockIcon) as? Bool
+            ?? previousValue(forKey: Keys.showDockIcon, as: Bool.self)
+            ?? true
+
         // Preserve preferences across the provisional bundle IDs used by earlier releases.
         defaults.set(language.rawValue, forKey: Keys.language)
         defaults.set(compactMode, forKey: Keys.compactMode)
         defaults.set(standardViewMode.rawValue, forKey: Keys.standardViewMode)
         defaults.set(pollingFrequency.rawValue, forKey: Keys.pollingFrequency)
         defaults.set(accentTheme.rawValue, forKey: Keys.accentTheme)
+        defaults.set(showDockIcon, forKey: Keys.showDockIcon)
 
         if defaults.string(forKey: Keys.panelFrame) == nil,
            let panelFrame = previousString(forKey: Keys.panelFrame) {
             defaults.set(panelFrame, forKey: Keys.panelFrame)
         }
+    }
+
+    static func shouldShowDockIcon(defaults: UserDefaults = .standard) -> Bool {
+        defaults.object(forKey: Keys.showDockIcon) as? Bool ?? true
     }
 }
 

@@ -4,6 +4,9 @@
 "menu.settings" = "设置…";
 "menu.language" = "语言";
 "menu.quit" = "退出 KeyLinger";
+"menu.window" = "窗口";
+"menu.minimize" = "最小化";
+"menu.bringAllToFront" = "前置全部窗口";
 "language.system" = "跟随系统";
 "status.normalTitle" = "键盘状态正常";
 "status.pressedTitle" = "有键仍处于按下状态";
@@ -45,6 +48,8 @@
 "settings.window" = "窗口";
 "settings.compactMode" = "使用小窗模式";
 "settings.compactHint" = "仅显示状态灯、当前按键和快捷入口。";
+"settings.showDockIcon" = "在 Dock 中显示 KeyLinger";
+"settings.showDockHint" = "即使菜单栏图标被隐藏，也保留可靠的窗口入口。";
 "settings.about" = "关于";
 "settings.version" = "版本 %@";
 "settings.author" = "作者：%@";

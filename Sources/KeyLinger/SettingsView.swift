@@ -100,6 +100,17 @@ struct SettingsView: View {
             }
             .toggleStyle(.switch)
             .padding(.leading, 24)
+
+            Toggle(isOn: $settings.showDockIcon) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(text("settings.showDockIcon"))
+                    Text(text("settings.showDockHint"))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .toggleStyle(.switch)
+            .padding(.leading, 24)
         }
     }
 
@@ -213,7 +224,7 @@ struct SettingsView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.8.1"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.9.0"
     }
 
     private var githubMark: Image {
