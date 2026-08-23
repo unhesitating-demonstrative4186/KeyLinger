@@ -18,14 +18,29 @@ jobs:
       - name: Build debug target
         run: swift build
 
-      - name: Build universal app
-        run: ./build_app.sh release universal
+      - name: Build Apple Silicon app
+        run: ./build_app.sh release arm64
 
-      - name: Verify bundle
+      - name: Verify Apple Silicon bundle
         run: |
           codesign --verify --deep --strict dist/KeyLinger.app
-          test "$(lipo -archs dist/KeyLinger.app/Contents/MacOS/KeyLinger)" = "x86_64 arm64" || \
-            test "$(lipo -archs dist/KeyLinger.app/Contents/MacOS/KeyLinger)" = "arm64 x86_64"
+          test "$(lipo -archs dist/KeyLinger.app/Contents/MacOS/KeyLinger)" = "arm64"
+          test -f dist/KeyLinger.app/Contents/Resources/AppIcon.icns
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' dist/KeyLinger.app/Contents/Info.plist)" = "AppIcon.icns"
           plutil -lint dist/KeyLinger.app/Contents/Info.plist
+
+      - name: Build Intel app
+        run: ./build_app.sh release x86_64
+
+      - name: Verify Intel bundle
+        run: |
+          codesign --verify --deep --strict dist/KeyLinger.app
+          test "$(lipo -archs dist/KeyLinger.app/Contents/MacOS/KeyLinger)" = "x86_64"
+          test -f dist/KeyLinger.app/Contents/Resources/AppIcon.icns
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' dist/KeyLinger.app/Contents/Info.plist)" = "AppIcon.icns"
+          plutil -lint dist/KeyLinger.app/Contents/Info.plist
+
+      - name: Verify localizations
+        run: |
           plutil -lint Sources/KeyLinger/Resources/en.lproj/Localizable.strings
           plutil -lint Sources/KeyLinger/Resources/zh-Hans.lproj/Localizable.strings

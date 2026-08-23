@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1 — 2026-08-23
+
+- 分别提供 Apple Silicon（arm64）与 Intel（x86_64）DMG，方便按机型下载。
+- 保留 Universal App 的本地构建支持。
+- 加入 KeyLinger 应用图标，用于 Finder、应用程序目录和系统界面。
+
 ## 0.5.0 — 2026-08-23
 
 - 实时读取 macOS 当前会话中的按下键位，而不是仅记录启动后的事件。

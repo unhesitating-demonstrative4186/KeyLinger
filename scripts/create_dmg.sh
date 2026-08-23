@@ -5,19 +5,57 @@ set -euo pipefail
 project_dir="${0:A:h:h}"
 version="${1:-$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$project_dir/Resources/Info.plist")}"
 version="${version#v}"
+requested_architecture="${2:-auto}"
 app_path="$project_dir/dist/KeyLinger.app"
-output_path="$project_dir/dist/KeyLinger-v${version}-macOS-universal.dmg"
 
 if [[ ! -d "$app_path" ]]; then
-    print -u2 "未找到 $app_path，请先运行 ./build_app.sh release universal"
+    print -u2 "未找到 $app_path，请先运行 ./build_app.sh release <架构>"
     exit 1
 fi
 
 architectures="$(/usr/bin/lipo -archs "$app_path/Contents/MacOS/KeyLinger")"
-if [[ "$architectures" != *"arm64"* || "$architectures" != *"x86_64"* ]]; then
-    print -u2 "KeyLinger.app 不是 Universal Binary：$architectures"
-    exit 1
+if [[ "$requested_architecture" == "auto" ]]; then
+    if [[ "$architectures" == "arm64" ]]; then
+        requested_architecture="arm64"
+    elif [[ "$architectures" == "x86_64" ]]; then
+        requested_architecture="x86_64"
+    elif [[ "$architectures" == *"arm64"* && "$architectures" == *"x86_64"* ]]; then
+        requested_architecture="universal"
+    else
+        print -u2 "无法识别 KeyLinger.app 的架构：$architectures"
+        exit 1
+    fi
 fi
+
+case "$requested_architecture" in
+    arm64)
+        artifact_architecture="Apple-Silicon"
+        if [[ "$architectures" != "arm64" ]]; then
+            print -u2 "期望 arm64 App，实际架构为：$architectures"
+            exit 1
+        fi
+        ;;
+    x86_64)
+        artifact_architecture="Intel"
+        if [[ "$architectures" != "x86_64" ]]; then
+            print -u2 "期望 x86_64 App，实际架构为：$architectures"
+            exit 1
+        fi
+        ;;
+    universal)
+        artifact_architecture="universal"
+        if [[ "$architectures" != *"arm64"* || "$architectures" != *"x86_64"* ]]; then
+            print -u2 "期望 Universal App，实际架构为：$architectures"
+            exit 1
+        fi
+        ;;
+    *)
+        print -u2 "用法: ./scripts/create_dmg.sh [版本] [arm64|x86_64|universal]"
+        exit 2
+        ;;
+esac
+
+output_path="$project_dir/dist/KeyLinger-v${version}-macOS-${artifact_architecture}.dmg"
 
 staging_dir="$(mktemp -d /tmp/keylinger-dmg.XXXXXX)"
 cleanup() {

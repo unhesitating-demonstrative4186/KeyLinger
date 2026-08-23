@@ -11,8 +11,12 @@ macOS 的 combined session 键位状态。因此 RustDesk 等远程控制软件�
 
 ## 下载
 
-从 [GitHub Releases](https://github.com/myweihp/KeyLinger/releases/latest) 下载 Universal DMG，
-同时支持 Apple Silicon 与 Intel Mac。打开 DMG 后，将 `KeyLinger.app` 拖入 Applications。
+从 [GitHub Releases](https://github.com/myweihp/KeyLinger/releases/latest) 下载对应机型的 DMG：
+
+- Apple Silicon：选择文件名包含 `Apple-Silicon` 的版本，适用于 Apple M 系列芯片。
+- Intel：选择文件名包含 `Intel` 的版本。
+
+打开 DMG 后，将 `KeyLinger.app` 拖入 Applications。
 
 当前版本使用 ad-hoc 签名，尚未使用 Apple Developer ID 公证。第一次启动时如果 macOS 阻止打开，
 请在 Finder 中右键点按 KeyLinger，选择“打开”，然后确认。
@@ -31,12 +35,17 @@ open "dist/KeyLinger.app"
 swift run KeyLinger
 ```
 
-构建 Universal App 与 DMG：
+分别构建 Apple Silicon 与 Intel App/DMG：
 
 ```bash
-./build_app.sh release universal
-./scripts/create_dmg.sh
+./build_app.sh release arm64
+./scripts/create_dmg.sh v0.5.1 arm64
+
+./build_app.sh release x86_64
+./scripts/create_dmg.sh v0.5.1 x86_64
 ```
+
+如需本地生成同时包含两种架构的 App，仍可运行 `./build_app.sh release universal`。
 
 程序默认显示一个置顶小面板，同时常驻菜单栏。关闭面板不会退出；可从菜单栏再次显示或退出。
 
