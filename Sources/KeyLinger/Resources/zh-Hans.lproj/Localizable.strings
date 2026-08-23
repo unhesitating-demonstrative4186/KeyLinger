@@ -29,6 +29,12 @@
 "settings.general" = "通用";
 "settings.language" = "语言";
 "settings.frequency" = "刷新频率";
+"settings.theme" = "强调色";
+"theme.system" = "跟随系统";
+"theme.mint" = "薄荷绿";
+"theme.blue" = "蓝色";
+"theme.indigo" = "靛蓝";
+"theme.purple" = "紫色";
 "settings.frequencyHint" = "频率越高，卡键出现得越快，但会增加少量常驻 CPU 开销。";
 "settings.window" = "窗口";
 "settings.compactMode" = "使用小窗模式";

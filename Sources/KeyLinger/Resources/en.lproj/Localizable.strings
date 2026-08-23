@@ -29,6 +29,12 @@
 "settings.general" = "General";
 "settings.language" = "Language";
 "settings.frequency" = "Refresh rate";
+"settings.theme" = "Accent color";
+"theme.system" = "System";
+"theme.mint" = "Mint";
+"theme.blue" = "Blue";
+"theme.indigo" = "Indigo";
+"theme.purple" = "Purple";
 "settings.frequencyHint" = "Higher rates reveal stuck keys sooner, with a small increase in background CPU use.";
 "settings.window" = "Window";
 "settings.compactMode" = "Use compact window";

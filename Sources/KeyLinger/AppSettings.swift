@@ -43,6 +43,7 @@ final class AppSettings: ObservableObject {
         static let language = "language"
         static let compactMode = "compactMode"
         static let pollingFrequency = "pollingFrequency"
+        static let accentTheme = "accentTheme"
     }
 
     @Published var language: AppLanguage {
@@ -55,6 +56,10 @@ final class AppSettings: ObservableObject {
 
     @Published var pollingFrequency: PollingFrequency {
         didSet { defaults.set(pollingFrequency.rawValue, forKey: Keys.pollingFrequency) }
+    }
+
+    @Published var accentTheme: AccentTheme {
+        didSet { defaults.set(accentTheme.rawValue, forKey: Keys.accentTheme) }
     }
 
     private let defaults: UserDefaults
@@ -77,10 +82,14 @@ final class AppSettings: ObservableObject {
             ?? legacyDefaults?.object(forKey: Keys.pollingFrequency) as? Int
         pollingFrequency = storedFrequency.flatMap(PollingFrequency.init(rawValue:)) ?? .balanced
 
+        let storedAccentTheme = defaults.string(forKey: Keys.accentTheme)
+        accentTheme = storedAccentTheme.flatMap(AccentTheme.init(rawValue:)) ?? .system
+
         // Preserve preferences when upgrading from the former local.keyboard-status bundle ID.
         defaults.set(language.rawValue, forKey: Keys.language)
         defaults.set(compactMode, forKey: Keys.compactMode)
         defaults.set(pollingFrequency.rawValue, forKey: Keys.pollingFrequency)
+        defaults.set(accentTheme.rawValue, forKey: Keys.accentTheme)
     }
 }
 

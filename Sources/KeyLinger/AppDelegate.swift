@@ -231,7 +231,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if settingsWindow == nil {
             let view = SettingsView(settings: settings)
             let window = NSPanel(
-                contentRect: NSRect(x: 0, y: 0, width: 460, height: 560),
+                contentRect: NSRect(x: 0, y: 0, width: 460, height: 600),
                 styleMask: [.titled, .closable],
                 backing: .buffered,
                 defer: false

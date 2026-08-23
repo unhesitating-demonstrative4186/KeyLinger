@@ -15,6 +15,7 @@ struct PressedKeysView: View {
             }
         }
         .background(.ultraThinMaterial)
+        .tint(settings.accentTheme.tintColor)
     }
 
     private var fullView: some View {
@@ -70,7 +71,7 @@ struct PressedKeysView: View {
                 Image(systemName: "gearshape")
             }
             .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(.tint)
             .help(text("settings.open"))
 
             Button {
@@ -79,7 +80,7 @@ struct PressedKeysView: View {
                 Image(systemName: "arrow.up.left.and.arrow.down.right")
             }
             .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(.tint)
             .help(text("window.expand"))
         }
         .padding(.horizontal, 14)
@@ -109,7 +110,7 @@ struct PressedKeysView: View {
                 Image(systemName: "gearshape")
             }
             .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(.tint)
             .help(text("settings.open"))
 
             Button {
@@ -118,7 +119,7 @@ struct PressedKeysView: View {
                 Image(systemName: "arrow.down.right.and.arrow.up.left")
             }
             .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(.tint)
             .help(text("window.compact"))
         }
     }
@@ -196,6 +197,7 @@ struct PressedKeysView: View {
     private var footer: some View {
         HStack(spacing: 6) {
             Image(systemName: "waveform.path.ecg")
+                .foregroundStyle(.tint)
             Text(
                 L10n.format(
                     "footer.reading",

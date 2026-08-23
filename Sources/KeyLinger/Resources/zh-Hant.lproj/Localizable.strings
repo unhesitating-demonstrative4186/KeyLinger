@@ -29,6 +29,12 @@
 "settings.general" = "一般";
 "settings.language" = "語言";
 "settings.frequency" = "更新頻率";
+"settings.theme" = "強調色";
+"theme.system" = "跟隨系統";
+"theme.mint" = "薄荷綠";
+"theme.blue" = "藍色";
+"theme.indigo" = "靛藍";
+"theme.purple" = "紫色";
 "settings.frequencyHint" = "頻率越高，越快發現卡住的按鍵，但會增加少量常駐 CPU 用量。";
 "settings.window" = "視窗";
 "settings.compactMode" = "使用小視窗模式";

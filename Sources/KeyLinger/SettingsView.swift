@@ -20,6 +20,7 @@ struct SettingsView: View {
         .padding(22)
         .frame(width: 460)
         .background(.ultraThinMaterial)
+        .tint(settings.accentTheme.tintColor)
     }
 
     private var header: some View {
@@ -61,6 +62,20 @@ struct SettingsView: View {
                     }
                 }
                 .labelsHidden()
+                .frame(width: 170)
+            }
+
+            settingRow(label: text("settings.theme")) {
+                HStack(spacing: 8) {
+                    themeSwatch(settings.accentTheme)
+                    Picker("", selection: $settings.accentTheme) {
+                        ForEach(AccentTheme.allCases) { theme in
+                            themeLabel(theme).tag(theme)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 145)
+                }
                 .frame(width: 170)
             }
 
@@ -122,6 +137,7 @@ struct SettingsView: View {
                             .frame(width: 13, height: 13)
                     }
                 }
+                .foregroundStyle(.tint)
 
                 Spacer()
 
@@ -197,7 +213,7 @@ struct SettingsView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.6.1"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.7.0"
     }
 
     private var githubMark: Image {
@@ -210,6 +226,27 @@ struct SettingsView: View {
             }
         }
         return Image(systemName: "link")
+    }
+
+    @ViewBuilder
+    private func themeLabel(_ theme: AccentTheme) -> some View {
+        HStack(spacing: 7) {
+            themeSwatch(theme)
+            Text(text(theme.localizationKey))
+        }
+    }
+
+    @ViewBuilder
+    private func themeSwatch(_ theme: AccentTheme) -> some View {
+        if let color = theme.tintColor {
+            Circle()
+                .fill(color)
+                .frame(width: 10, height: 10)
+        } else {
+            Image(systemName: "circle.lefthalf.filled")
+                .foregroundStyle(.secondary)
+                .frame(width: 10, height: 10)
+        }
     }
 
     private func text(_ key: String) -> String {
