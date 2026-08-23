@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build universal app
+        run: ./build_app.sh release universal
+
+      - name: Create DMG
+        run: ./scripts/create_dmg.sh "$GITHUB_REF_NAME"
+
+      - name: Create checksum
+        run: |
+          cd dist
+          shasum -a 256 "KeyLinger-${GITHUB_REF_NAME}-macOS-universal.dmg" \
+            > "KeyLinger-${GITHUB_REF_NAME}-SHA256.txt"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/KeyLinger-${GITHUB_REF_NAME}-macOS-universal.dmg" \
+            "dist/KeyLinger-${GITHUB_REF_NAME}-SHA256.txt" \
+            --verify-tag \
+            --generate-notes \
+            --title "KeyLinger $GITHUB_REF_NAME"

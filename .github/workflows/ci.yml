@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build debug target
+        run: swift build
+
+      - name: Build universal app
+        run: ./build_app.sh release universal
+
+      - name: Verify bundle
+        run: |
+          codesign --verify --deep --strict dist/KeyLinger.app
+          test "$(lipo -archs dist/KeyLinger.app/Contents/MacOS/KeyLinger)" = "x86_64 arm64" || \
+            test "$(lipo -archs dist/KeyLinger.app/Contents/MacOS/KeyLinger)" = "arm64 x86_64"
+          plutil -lint dist/KeyLinger.app/Contents/Info.plist
+          plutil -lint Sources/KeyLinger/Resources/en.lproj/Localizable.strings
+          plutil -lint Sources/KeyLinger/Resources/zh-Hans.lproj/Localizable.strings
