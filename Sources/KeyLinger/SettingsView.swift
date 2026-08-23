@@ -113,7 +113,14 @@ struct SettingsView: View {
 
             HStack(spacing: 10) {
                 Link(destination: projectURL) {
-                    Label(text("settings.project"), systemImage: "link")
+                    Label {
+                        Text(text("settings.project"))
+                    } icon: {
+                        githubMark
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 13, height: 13)
+                    }
                 }
 
                 Spacer()
@@ -190,7 +197,19 @@ struct SettingsView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.6.0"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.6.1"
+    }
+
+    private var githubMark: Image {
+        let bundles = [Bundle.main, Bundle.module]
+        for bundle in bundles {
+            if let url = bundle.url(forResource: "GitHubMark", withExtension: "svg"),
+               let image = NSImage(contentsOf: url) {
+                image.isTemplate = true
+                return Image(nsImage: image)
+            }
+        }
+        return Image(systemName: "link")
     }
 
     private func text(_ key: String) -> String {
