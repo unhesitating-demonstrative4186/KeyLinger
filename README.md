@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/myweihp/KeyLinger/actions/workflows/ci.yml/badge.svg)](https://github.com/myweihp/KeyLinger/actions/workflows/ci.yml)
 [![Latest Release](https://img.shields.io/github/v/release/myweihp/KeyLinger)](https://github.com/myweihp/KeyLinger/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 一个 macOS 菜单栏小工具，实时显示系统当前仍判定为“按下”的键。
 
@@ -63,3 +64,7 @@ swift run KeyLinger
 
 - 显示的是 macOS 当前会话的逻辑键位状态，正好适合排查远程输入的“粘键”。
 - 部分厂商自定义功能键、Touch Bar 动作或消费类媒体键不使用标准键盘虚拟键码，可能无法显示。
+
+## 许可证
+
+KeyLinger 使用 [MIT License](LICENSE) 开源。
