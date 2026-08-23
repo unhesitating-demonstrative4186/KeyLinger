@@ -12,11 +12,36 @@ macOS 的 combined session 键位状态。因此 RustDesk 等远程控制软件�
 
 ## 界面
 
-![KeyLinger 完整状态面板](docs/images/keylinger-main.png)
-
-![KeyLinger 小窗模式](docs/images/keylinger-compact.png)
-
-<img src="docs/images/keylinger-settings.png" alt="KeyLinger 设置窗口" width="460">
+<table>
+  <tr>
+    <td width="58%" valign="top">
+      <p align="center">
+        <strong>完整状态面板</strong><br>
+        <sub>按键状态、实时计数与刷新频率一目了然</sub>
+      </p>
+      <a href="docs/images/keylinger-main.png">
+        <img src="docs/images/keylinger-main.png" alt="KeyLinger 完整状态面板" width="100%">
+      </a>
+      <br><br>
+      <p align="center">
+        <strong>小窗模式</strong><br>
+        <sub>保留核心状态，适合放在屏幕边缘</sub>
+      </p>
+      <a href="docs/images/keylinger-compact.png">
+        <img src="docs/images/keylinger-compact.png" alt="KeyLinger 小窗模式" width="100%">
+      </a>
+    </td>
+    <td width="42%" valign="top">
+      <p align="center">
+        <strong>设置</strong><br>
+        <sub>语言、刷新频率、窗口模式与隐私说明</sub>
+      </p>
+      <a href="docs/images/keylinger-settings.png">
+        <img src="docs/images/keylinger-settings.png" alt="KeyLinger 设置窗口" width="100%">
+      </a>
+    </td>
+  </tr>
+</table>
 
 ## 下载
 
