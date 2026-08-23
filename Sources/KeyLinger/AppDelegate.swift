@@ -75,14 +75,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     private func makeStatusItem() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        let statusImage = NSImage(
-            systemSymbolName: "keyboard",
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        statusItem.autosaveName = "io.github.myweihp.KeyLinger.status-item"
+        statusItem.button?.image = statusBarImage(
+            systemName: "keyboard",
             accessibilityDescription: "KeyLinger"
         )
-        statusImage?.isTemplate = true
-        statusItem.button?.image = statusImage
-        statusItem.button?.imagePosition = .imageLeading
+        statusItem.button?.imagePosition = .imageOnly
+        statusItem.button?.imageScaling = .scaleProportionallyDown
+        statusItem.button?.setAccessibilityLabel("KeyLinger")
+        statusItem.button?.setAccessibilityIdentifier("io.github.myweihp.KeyLinger.status-item")
 
         let menu = NSMenu()
         showMenuItem = menu.addItem(withTitle: "", action: #selector(showPanel), keyEquivalent: "s")
@@ -158,17 +160,44 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         guard statusItem != nil else { return }
         let language = language ?? settings.language
         let count = pressedKeyCount ?? monitor.pressedKeys.count
-        statusItem.button?.title = count == 0 ? "" : " " + String(count)
-        let statusImage = NSImage(
-            systemSymbolName: count == 0 ? "keyboard" : "keyboard.fill",
+        let statusImage = statusBarImage(
+            systemName: count == 0 ? "keyboard" : "keyboard.fill",
             accessibilityDescription: text("app.name", language: language)
         )
-        statusImage?.isTemplate = true
-        statusItem.button?.image = statusImage
+
+        if let statusImage {
+            statusItem.length = count == 0
+                ? NSStatusItem.squareLength
+                : NSStatusItem.variableLength
+            statusItem.button?.title = count == 0 ? "" : " " + String(count)
+            statusItem.button?.image = statusImage
+            statusItem.button?.imagePosition = count == 0 ? .imageOnly : .imageLeading
+        } else {
+            statusItem.length = NSStatusItem.variableLength
+            statusItem.button?.image = nil
+            statusItem.button?.title = count == 0 ? "⌨" : "⌨ " + String(count)
+        }
+
         statusItem.button?.contentTintColor = nil
         statusItem.button?.toolTip = count == 0
             ? text("status.tooltip.normal", language: language)
             : L10n.format("status.tooltip.pressed", language: language, count)
+    }
+
+    private func statusBarImage(
+        systemName: String,
+        accessibilityDescription: String
+    ) -> NSImage? {
+        guard let image = NSImage(
+            systemSymbolName: systemName,
+            accessibilityDescription: accessibilityDescription
+        ) else { return nil }
+
+        let configuration = NSImage.SymbolConfiguration(pointSize: 14, weight: .medium)
+        let configuredImage = image.withSymbolConfiguration(configuration) ?? image
+        configuredImage.isTemplate = true
+        configuredImage.size = NSSize(width: 18, height: 18)
+        return configuredImage
     }
 
     private func updatePermissionMenuItem(language: AppLanguage? = nil) {

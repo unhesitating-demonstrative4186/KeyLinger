@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.1 — 2026-08-23
+
+- Migrated to the stable `io.github.myweihp.KeyLinger` bundle identifier, preserving existing app preferences.
+- Existing users need to grant Input Monitoring once more after updating because macOS treats the stable bundle identifier as a new app identity.
+- Stabilized the menu bar item with a fixed idle width, an adaptive template symbol, and a reliable pressed-key count.
+- Added a text fallback for systems where the keyboard SF Symbol is unavailable.
+- Aligned all three settings pickers and removed the duplicate accent-color swatch on macOS 26.
+
 ## 0.8.0 — 2026-08-23
 
 - 新增响应式 MacBook/ANSI 键盘 Map，可直观看到被系统判定为按下的键帽。

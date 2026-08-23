@@ -48,7 +48,7 @@ touch "$app_dir"
     --force \
     --deep \
     --sign - \
-    --requirements '=designated => identifier "local.keylinger"' \
+    --requirements '=designated => identifier "io.github.myweihp.KeyLinger"' \
     "$app_dir"
 
 print "已生成：$app_dir"

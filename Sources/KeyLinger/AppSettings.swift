@@ -50,6 +50,7 @@ final class AppSettings: ObservableObject {
         static let standardViewMode = "standardViewMode"
         static let pollingFrequency = "pollingFrequency"
         static let accentTheme = "accentTheme"
+        static let panelFrame = "NSWindow Frame KeyLingerPanel"
     }
 
     @Published var language: AppLanguage {
@@ -76,34 +77,52 @@ final class AppSettings: ObservableObject {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        let legacyDefaults = UserDefaults(suiteName: "local.keyboard-status")
+        let previousDefaults = [
+            UserDefaults(suiteName: "local.keylinger"),
+            UserDefaults(suiteName: "local.keyboard-status")
+        ].compactMap { $0 }
+
+        func previousString(forKey key: String) -> String? {
+            previousDefaults.lazy.compactMap { $0.string(forKey: key) }.first
+        }
+
+        func previousValue<T>(forKey key: String, as type: T.Type) -> T? {
+            previousDefaults.lazy.compactMap { $0.object(forKey: key) as? T }.first
+        }
 
         let storedLanguage = defaults.string(forKey: Keys.language)
-            ?? legacyDefaults?.string(forKey: Keys.language)
+            ?? previousString(forKey: Keys.language)
         language = storedLanguage.flatMap(AppLanguage.init(rawValue:)) ?? .system
 
         if let storedCompactMode = defaults.object(forKey: Keys.compactMode) as? Bool {
             compactMode = storedCompactMode
         } else {
-            compactMode = legacyDefaults?.bool(forKey: Keys.compactMode) ?? false
+            compactMode = previousValue(forKey: Keys.compactMode, as: Bool.self) ?? false
         }
 
         let storedStandardViewMode = defaults.string(forKey: Keys.standardViewMode)
+            ?? previousString(forKey: Keys.standardViewMode)
         standardViewMode = storedStandardViewMode.flatMap(StandardViewMode.init(rawValue:)) ?? .keyboard
 
         let storedFrequency = defaults.object(forKey: Keys.pollingFrequency) as? Int
-            ?? legacyDefaults?.object(forKey: Keys.pollingFrequency) as? Int
+            ?? previousValue(forKey: Keys.pollingFrequency, as: Int.self)
         pollingFrequency = storedFrequency.flatMap(PollingFrequency.init(rawValue:)) ?? .balanced
 
         let storedAccentTheme = defaults.string(forKey: Keys.accentTheme)
+            ?? previousString(forKey: Keys.accentTheme)
         accentTheme = storedAccentTheme.flatMap(AccentTheme.init(rawValue:)) ?? .system
 
-        // Preserve preferences when upgrading from the former local.keyboard-status bundle ID.
+        // Preserve preferences across the provisional bundle IDs used by earlier releases.
         defaults.set(language.rawValue, forKey: Keys.language)
         defaults.set(compactMode, forKey: Keys.compactMode)
         defaults.set(standardViewMode.rawValue, forKey: Keys.standardViewMode)
         defaults.set(pollingFrequency.rawValue, forKey: Keys.pollingFrequency)
         defaults.set(accentTheme.rawValue, forKey: Keys.accentTheme)
+
+        if defaults.string(forKey: Keys.panelFrame) == nil,
+           let panelFrame = previousString(forKey: Keys.panelFrame) {
+            defaults.set(panelFrame, forKey: Keys.panelFrame)
+        }
     }
 }
 

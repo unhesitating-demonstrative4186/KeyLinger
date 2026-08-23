@@ -6,6 +6,7 @@ struct SettingsView: View {
     @StateObject private var updateChecker = UpdateChecker()
 
     private let projectURL = URL(string: "https://github.com/myweihp/KeyLinger")!
+    private let pickerColumnWidth: CGFloat = 170
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -52,7 +53,8 @@ struct SettingsView: View {
                     Text("English").tag(AppLanguage.english)
                 }
                 .labelsHidden()
-                .frame(width: 170)
+                .fixedSize()
+                .frame(width: pickerColumnWidth, alignment: .trailing)
             }
 
             settingRow(label: text("settings.frequency")) {
@@ -62,21 +64,19 @@ struct SettingsView: View {
                     }
                 }
                 .labelsHidden()
-                .frame(width: 170)
+                .fixedSize()
+                .frame(width: pickerColumnWidth, alignment: .trailing)
             }
 
             settingRow(label: text("settings.theme")) {
-                HStack(spacing: 8) {
-                    themeSwatch(settings.accentTheme)
-                    Picker("", selection: $settings.accentTheme) {
-                        ForEach(AccentTheme.allCases) { theme in
-                            themeLabel(theme).tag(theme)
-                        }
+                Picker("", selection: $settings.accentTheme) {
+                    ForEach(AccentTheme.allCases) { theme in
+                        themeLabel(theme).tag(theme)
                     }
-                    .labelsHidden()
-                    .frame(width: 145)
                 }
-                .frame(width: 170)
+                .labelsHidden()
+                .fixedSize()
+                .frame(width: pickerColumnWidth, alignment: .trailing)
             }
 
             Text(text("settings.frequencyHint"))
@@ -213,7 +213,7 @@ struct SettingsView: View {
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.8.0"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.8.1"
     }
 
     private var githubMark: Image {
