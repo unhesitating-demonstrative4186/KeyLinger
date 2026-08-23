@@ -1,75 +1,144 @@
+<p align="right">
+  <strong>English</strong> ·
+  <a href="README.zh-Hans.md">简体中文</a> ·
+  <a href="README.zh-Hant.md">繁體中文</a>
+</p>
+
 # KeyLinger
 
 [![CI](https://github.com/myweihp/KeyLinger/actions/workflows/ci.yml/badge.svg)](https://github.com/myweihp/KeyLinger/actions/workflows/ci.yml)
 [![Latest Release](https://img.shields.io/github/v/release/myweihp/KeyLinger)](https://github.com/myweihp/KeyLinger/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-一个 macOS 菜单栏小工具，实时显示系统当前仍判定为“按下”的键。
+> See which keys macOS still believes are pressed.
 
-它不是从启动时才开始记录 `keydown` / `keyup` 事件，而是每秒 10 次直接查询
-macOS 的 combined session 键位状态。因此 RustDesk 等远程控制软件漏掉 `keyup`
-时，即使随后才启动本工具，也能看到卡住的键。
+KeyLinger is a small macOS diagnostic utility that **queries the current keyboard state** instead of reconstructing it from a stream of `keydown` and `keyup` events.
 
-## 界面
+That distinction matters. An event listener only knows about events received after it starts. If a remote-desktop session, virtual machine, input utility, or application loses a `keyup`, opening an event viewer afterwards may be too late. KeyLinger asks macOS what the current session reports *right now*, so a key that was already stuck can appear on the first poll.
+
+## Why it is different
+
+| | Event-stream approach | KeyLinger |
+| --- | --- | --- |
+| Data source | New key events received after launch | Current key state reported by macOS |
+| Key stuck before launch | Usually cannot be inferred | Can be visible immediately |
+| Primary purpose | Inspect incoming input events | Diagnose the session's current held-key state |
+| History | May retain an event log | Keeps no key history |
+
+Internally, KeyLinger polls:
+
+```swift
+CGEventSource.keyState(.combinedSessionState, key: keyCode)
+```
+
+The default polling rate is 10 Hz and can be set from 2 to 30 Hz. KeyLinger is read-only: it does not synthesize key events or attempt to release a stuck key.
+
+## Interface
 
 <table>
   <tr>
-    <td width="58%" valign="top">
+    <td width="50%" valign="top">
       <p align="center">
-        <strong>完整状态面板</strong><br>
-        <sub>键盘 Map 直观标出仍处于按下状态的键</sub>
+        <strong>Keyboard map</strong><br>
+        <sub>Pressed keys stand out immediately; keys outside the ANSI map remain visible below it</sub>
       </p>
-      <a href="docs/images/keylinger-main.png">
-        <img src="docs/images/keylinger-main.png" alt="KeyLinger 完整状态面板" width="100%">
-      </a>
-      <br><br>
-      <p align="center">
-        <strong>小窗模式</strong><br>
-        <sub>保留核心状态，适合放在屏幕边缘</sub>
-      </p>
-      <a href="docs/images/keylinger-compact.png">
-        <img src="docs/images/keylinger-compact.png" alt="KeyLinger 小窗模式" width="100%">
+      <a href="docs/images/keylinger-main-en.png">
+        <img src="docs/images/keylinger-main-en.png" alt="KeyLinger keyboard map" width="100%">
       </a>
     </td>
-    <td width="42%" valign="top">
+    <td width="50%" valign="top">
       <p align="center">
-        <strong>设置</strong><br>
-        <sub>语言、刷新频率、窗口模式与隐私说明</sub>
+        <strong>Key list</strong><br>
+        <sub>A compact textual view for reading the current result at a glance</sub>
       </p>
-      <a href="docs/images/keylinger-settings.png">
-        <img src="docs/images/keylinger-settings.png" alt="KeyLinger 设置窗口" width="100%">
+      <a href="docs/images/keylinger-list-en.png">
+        <img src="docs/images/keylinger-list-en.png" alt="KeyLinger key-list view" width="100%">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <p align="center">
+        <strong>Compact mode</strong><br>
+        <sub>A status-focused view that fits at the edge of the screen</sub>
+      </p>
+      <a href="docs/images/keylinger-compact-en.png">
+        <img src="docs/images/keylinger-compact-en.png" alt="KeyLinger compact mode" width="100%">
+      </a>
+    </td>
+    <td width="50%" valign="top">
+      <p align="center">
+        <strong>Settings</strong><br>
+        <sub>Language, polling rate, appearance, privacy information, and update checks</sub>
+      </p>
+      <a href="docs/images/keylinger-settings-en.png">
+        <img src="docs/images/keylinger-settings-en.png" alt="KeyLinger settings" width="100%">
       </a>
     </td>
   </tr>
 </table>
 
-## 下载
+## When it is useful
 
-从 [GitHub Releases](https://github.com/myweihp/KeyLinger/releases/latest) 下载对应机型的 DMG：
+- A modifier, letter, number, or Space remains logically pressed after a remote session.
+- An application behaves as though a key is held down, but the source is unclear.
+- You want to inspect the current session state without recording what was typed.
+- You need to check a suspected stuck key after the problem has already occurred.
 
-- Apple Silicon：选择文件名包含 `Apple-Silicon` 的版本，适用于 Apple M 系列芯片。
-- Intel：选择文件名包含 `Intel` 的版本。
+The original motivation was diagnosing lost `keyup` signals in RustDesk sessions; the same state-query approach is useful for any application that appears to have a key stuck down.
 
-打开 DMG 后，将 `KeyLinger.app` 拖入 Applications。
+## Features
 
-当前版本使用 ad-hoc 签名，尚未使用 Apple Developer ID 公证。第一次启动时如果 macOS 阻止打开，
-请在 Finder 中右键点按 KeyLinger，选择“打开”，然后确认。
+- Responsive MacBook/ANSI keyboard map with a clear pressed-key state.
+- Key-list view for a compact textual diagnosis.
+- Fallback labels for numpad, ISO, JIS, and other keys outside the visual map.
+- Floating panel that can remain visible across Spaces, plus a menu-bar entry.
+- Compact window mode for status-only monitoring.
+- Configurable 2–30 Hz polling rate and persistent display preferences.
+- English, Simplified Chinese, and Traditional Chinese interface languages.
+- Native Apple Silicon and Intel builds.
 
-## 运行
+## Download and install
+
+Download the appropriate DMG from [GitHub Releases](https://github.com/myweihp/KeyLinger/releases/latest):
+
+- **Apple Silicon:** choose the file containing `Apple-Silicon` for M-series Macs.
+- **Intel:** choose the file containing `Intel`.
+
+Open the DMG and drag `KeyLinger.app` into Applications.
+
+The current builds use an ad-hoc signature and are not notarized with an Apple Developer ID. On first launch, macOS may block the app. In Finder, Control-click or right-click KeyLinger, choose **Open**, and confirm the prompt.
+
+## Permission and system requirements
+
+- macOS 13 or later.
+- Input Monitoring permission is required to reliably read ordinary keys such as letters, numbers, and Space while another application has focus.
+- After granting permission, KeyLinger may need to be restarted before background detection becomes available.
+
+KeyLinger shows a permission notice and can open the relevant System Settings page when access is missing.
+
+## Privacy
+
+KeyLinger reads only the set of keys that macOS currently reports as pressed. It does not keep a key-event history, reconstruct typed text, write keyboard data to disk, or upload keyboard data.
+
+The app accesses GitHub only when you manually choose **Check for Updates**.
+
+## Build from source
+
+Build and open a native app bundle:
 
 ```bash
-chmod +x build_app.sh
-./build_app.sh
+./build_app.sh release native
 open "dist/KeyLinger.app"
 ```
 
-也可以开发运行：
+Run directly with Swift Package Manager during development:
 
 ```bash
 swift run KeyLinger
 ```
 
-分别构建 Apple Silicon 与 Intel App/DMG：
+Build architecture-specific apps and DMGs:
 
 ```bash
 ./build_app.sh release arm64
@@ -79,34 +148,25 @@ swift run KeyLinger
 ./scripts/create_dmg.sh x86_64
 ```
 
-如需本地生成同时包含两种架构的 App，仍可运行 `./build_app.sh release universal`。
+A local universal app can be built with `./build_app.sh release universal`. The keyboard-map data can be checked independently with:
 
-程序默认显示一个置顶小面板，同时常驻菜单栏。关闭面板不会退出；可从菜单栏再次显示或退出。
+```bash
+swift run KeyLinger --validate-keyboard-layout
+```
 
-完整面板右上角可以在“按键列表 / 键盘 Map”之间切换，选择会自动保存。菜单栏保留
-“显示面板 / 小窗模式 / 设置 / 退出”等常用入口。设置窗口可以选择
-“跟随系统 / 简体中文 / 繁體中文 / English”、2–30 Hz 刷新频率、窗口模式和强调色主题；
-这些选择会自动保存。界面外观始终跟随 macOS 的浅色或深色模式。
-“关于”区域提供项目地址，并通过 GitHub Releases 检查新版本。
+## Known limitations
 
-## 系统要求
+- KeyLinger reports the logical state of the current macOS session, not the electrical state of the physical keyboard.
+- The visual map currently uses a common MacBook/ANSI arrangement. Pressed numpad, ISO, JIS, and other out-of-layout keys appear as fallback labels instead of disappearing.
+- Some vendor-specific function keys, Touch Bar actions, and consumer/media keys do not use standard virtual key codes and may not be visible.
+- KeyLinger diagnoses a stuck state; it does not forcibly release or modify keys.
 
-- macOS 13 或更高版本
-- 窗口失焦后读取普通字母、数字和空格需要“输入监控”权限。程序会显示授权提示，
-  也可以从菜单栏选择“启用输入监控…”。授权后可能需要重启本程序。
+## Documentation languages
 
-## 已知边界
+- **English**
+- [简体中文](README.zh-Hans.md)
+- [繁體中文](README.zh-Hant.md)
 
-- 显示的是 macOS 当前会话的逻辑键位状态，正好适合排查远程输入的“粘键”。
-- 键盘 Map 当前采用常见的 MacBook/ANSI 排列；数字小键盘、ISO/JIS 等布局外按键被按下时，
-  会在 Map 下方以标签显示，不会遗漏检测结果。
-- 部分厂商自定义功能键、Touch Bar 动作或消费类媒体键不使用标准键盘虚拟键码，可能无法显示。
+## License
 
-## 隐私
-
-KeyLinger 只读取系统当前报告的按键状态，不记录按键历史或输入内容，也不会上传任何键盘数据。
-程序仅在用户手动点击“检查更新”时访问 GitHub Releases API。
-
-## 许可证
-
-KeyLinger 使用 [MIT License](LICENSE) 开源。
+KeyLinger is available under the [MIT License](LICENSE).
